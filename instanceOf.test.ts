@@ -44,6 +44,15 @@ describe("instanceOf()", () => {
     expect(instanceOf(testObj, myTypeRocksDescriptor)).toBe(false);
   });
 
+  it("returns false for missing keys", () => {
+    const testObj = {
+      decision: true,
+      name: "Carly",
+    };
+
+    expect(instanceOf(testObj, myTypeRocksDescriptor)).toBe(false);
+  });
+
   it("returns true for correct object signature", () => {
     const testObj = {
       decision: false,
