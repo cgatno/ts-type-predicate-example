@@ -13,25 +13,24 @@ export default function instanceOf<T extends Record<string, unknown>>(
   input: any,
   descriptor: T
 ): input is T {
-  // Create copy of descriptor for tracking keys
-  const copy = { ...descriptor };
+  // Create copy of input for tracking found keys
+  const inputCopy = { ...input };
 
-  // For each key on the input, run some tests to see if it complies with our type
-  for (const key of Object.keys(input)) {
-    // Case: input has a key not found in descriptor
-    if (!(key in copy)) return false;
+  // For each key on the descriptor, run some tests on input to see if it complies with our type
+  for (const key of Object.keys(descriptor)) {
+    // Case: input does not contain key on descriptor
+    if (!(key in inputCopy)) return false;
 
     // Case: JS type of input.key does not match JS type of descriptor.key
-    if (typeof copy[key] !== typeof input[key]) return false;
+    if (typeof descriptor[key] !== typeof inputCopy[key]) return false;
 
     // TODO: Add more specific test cases here! Only checking based on JS type (using `typeof`) is
     // a very loose form of validation.
 
-    // Delete this key/value pair out of descriptor copy so we know it passed
-    delete copy[key];
+    // Delete this key/value pair out of input copy so we know it passed
+    delete inputCopy[key];
   }
 
-  // Case: Input did not have all keys required by type T
-  // If copy has any keys left, it means the input did not match
-  return Object.keys(copy).length === 0;
+  // Case: Input has extra keys if the copy has any keys remaining after loop
+  return Object.keys(inputCopy).length === 0;
 }
